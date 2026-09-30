@@ -64,7 +64,7 @@ export default function App() {
           </main>
           <footer className="pie">
             <div className="contenedor pie-dentro">
-              <span>AppSalas — Gestión de turnos para salas de ensayo musical</span>
+              <span>Playr — Gestión de turnos para salas de ensayo musical</span>
               <span className="pie-muted">
                 Hecho con React + Express · {new Date().getFullYear()}
               </span>

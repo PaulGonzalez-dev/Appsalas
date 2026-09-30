@@ -5,10 +5,10 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = process.env.APPSALAS_DATA_DIR || path.join(__dirname, '..', 'data');
+const dataDir = process.env.PLAYR_DATA_DIR || path.join(__dirname, '..', 'data');
 fs.mkdirSync(dataDir, { recursive: true });
 
-const db = new Database(path.join(dataDir, 'appsalas.db'));
+const db = new Database(path.join(dataDir, 'playr.db'));
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 

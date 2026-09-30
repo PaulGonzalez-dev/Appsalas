@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/api/salud', (_req, res) => {
-  res.json({ ok: true, servicio: 'appsalas-api' });
+  res.json({ ok: true, servicio: 'playr-api' });
 });
 
 app.use('/api/auth', authRoutes);
@@ -48,5 +48,5 @@ app.use((err, _req, res, _next) => {
 
 const PUERTO = Number(process.env.PORT) || 3001;
 app.listen(PUERTO, '0.0.0.0', () => {
-  console.log(`✅ API de AppSalas escuchando en http://localhost:${PUERTO}`);
+  console.log(`✅ API de Playr escuchando en http://localhost:${PUERTO}`);
 });

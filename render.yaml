@@ -23,4 +23,4 @@ services:
 #      mountPath: /var/data
 #      sizeGB: 1
 #
-# y en envVars:  - key: APPSALAS_DATA_DIR  value: /var/data
+# y en envVars:  - key: PLAYR_DATA_DIR  value: /var/data

@@ -2,7 +2,7 @@ import './tz.js';
 import jwt from 'jsonwebtoken';
 import db from './db.js';
 
-const SECRETO = process.env.JWT_SECRET || 'appsalas-dev-secret-cambiar-en-produccion';
+const SECRETO = process.env.JWT_SECRET || 'playr-dev-secret-cambiar-en-produccion';
 
 export function firmarToken(usuario) {
   return jwt.sign({ sub: usuario.id }, SECRETO, { expiresIn: '7d' });

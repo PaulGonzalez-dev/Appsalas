@@ -1,4 +1,4 @@
-# 🎸 AppSalas
+# 🎸 Playr
 
 Aplicación para la **gestión de turnos de salas de ensayo musical**.
 Los músicos ven la disponibilidad en vivo en un calendario y reservan su turno;
@@ -45,7 +45,7 @@ Abrí **http://localhost:5173**
 | Administrador | `admin@salas.com` | `admin123` |
 | Músico       | `musico@demo.com` | `demo123`  |
 
-La base se crea en `server/data/appsalas.db` (ignorada por git). Para reiniciar
+La base se crea en `server/data/playr.db` (ignorada por git). Para reiniciar
 de cero: borrá ese archivo y volvé a correr `npm run seed`.
 
 ## Estructura
@@ -92,7 +92,7 @@ Appsalas/
 | DELETE | `/api/reservas/:id`                 | dueño/admin   | Cancelar reserva |
 
 Variables de entorno (opcionales): `PORT` (3001), `JWT_SECRET`, `TZ`
-(por defecto `America/Argentina/Buenos_Aires`), `APPSALAS_DATA_DIR`.
+(por defecto `America/Argentina/Buenos_Aires`), `PLAYR_DATA_DIR`.
 
 ## Despliegue (Render — gratis, sin tarjeta)
 

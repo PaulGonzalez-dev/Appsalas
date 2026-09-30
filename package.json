@@ -1,8 +1,8 @@
 {
-  "name": "appsalas",
+  "name": "playr",
   "version": "0.1.0",
   "private": true,
-  "description": "Aplicación para la gestión de turnos de salas de ensayo musical",
+  "description": "Playr — aplicación para la gestión de turnos de salas de ensayo musical",
   "workspaces": [
     "server",
     "client"

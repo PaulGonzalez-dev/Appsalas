@@ -4,7 +4,6 @@ import { api } from '../api';
 import type { Sala } from '../types';
 import { Spinner, Vacio } from '../components/UI';
 import { DIAS_CORTOS, fmtPrecio } from '../utils';
-import { Logo } from '../components/Navbar';
 
 function horarioDe(sala: Sala, dia: number): string {
   const d = sala.disponibilidad?.find((x) => x.dia_semana === dia);

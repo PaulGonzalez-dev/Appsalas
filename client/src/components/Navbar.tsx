@@ -2,16 +2,24 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 export function Logo({ chico = false }: { chico?: boolean }) {
+  const px = chico ? 24 : 30;
   return (
-    <span className="marca" style={chico ? { fontSize: '1rem' } : undefined}>
-      <svg viewBox="0 0 32 32" width={chico ? 24 : 30} height={chico ? 24 : 30} aria-hidden>
-        <rect width="32" height="32" rx="7" fill="var(--acento)" />
-        <path
-          d="M14 21.5a2.75 2.75 0 1 0 2.75 2.75V12l7.5-1.75v7.75A2.75 2.75 0 1 0 24 18.75V8l-10 2.35z"
-          fill="#020305"
-        />
+    <span className="marca">
+      <svg viewBox="0 0 100 100" width={px} height={px} aria-hidden>
+        <rect width="100" height="100" rx="20" fill="#edf0f5" />
+        <g
+          transform="translate(24 14) scale(0.72)"
+          fill="none"
+          stroke="#020305"
+          strokeWidth="14"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M15 12L59 44L17 73" />
+          <path d="M16 50L16 90" />
+        </g>
       </svg>
-      App<span className="marca-fuerte">Salas</span>
+      PLAYR
     </span>
   );
 }

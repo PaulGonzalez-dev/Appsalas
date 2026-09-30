@@ -151,7 +151,7 @@ code {
   gap: 0.55rem;
   font-weight: 800;
   font-size: 1.25rem;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.05em;
 }
 
 .marca-fuerte {

@@ -1,6 +1,6 @@
 import type { Session } from './types';
 
-const CLAVE = 'appsalas_sesion';
+const CLAVE = 'playr_sesion';
 
 export class ApiError extends Error {
   status: number;

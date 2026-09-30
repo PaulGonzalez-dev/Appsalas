@@ -143,4 +143,4 @@ function seedReservas() {
 seedUsuarios();
 seedSalas();
 seedReservas();
-console.log('✅ Base de datos lista (server/data/appsalas.db)');
+console.log('✅ Base de datos lista (server/data/playr.db)');
