@@ -113,7 +113,7 @@ export default function Home() {
       </section>
 
       {/* Pasos */}
-      <section className="seccion seccion-oscura">
+      <section className="seccion seccion-clara">
         <div className="contenedor">
           <div className="seccion-cab">
             <h2>¿Cómo funciona?</h2>

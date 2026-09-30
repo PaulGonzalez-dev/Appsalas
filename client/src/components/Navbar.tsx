@@ -8,7 +8,7 @@ export function Logo({ chico = false }: { chico?: boolean }) {
         <rect width="32" height="32" rx="7" fill="var(--acento)" />
         <path
           d="M14 21.5a2.75 2.75 0 1 0 2.75 2.75V12l7.5-1.75v7.75A2.75 2.75 0 1 0 24 18.75V8l-10 2.35z"
-          fill="#0b0d13"
+          fill="#020305"
         />
       </svg>
       App<span className="marca-fuerte">Salas</span>

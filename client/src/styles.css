@@ -1,20 +1,21 @@
 /* ======================= AppSalas · estilos ======================= */
 
 :root {
-  --fondo: #0b0d13;
-  --fondo-2: #0e111a;
-  --sup: #141827;
-  --sup-2: #1a1f33;
-  --linea: #242b42;
-  --texto: #eef1f8;
-  --apagado: #97a1ba;
-  --acento: #a3e635;
-  --acento-hos: #bdf35d;
-  --peligro: #f87171;
-  --ok: #4ade80;
-  --alerta: #fbbf24;
+  /* Paleta oficial: Lava Rush · Black Core · Cloud Ash · Gunmetal Gray */
+  --fondo: #020305; /* BLACK CORE */
+  --fondo-2: #0a0b0d;
+  --sup: #151618;
+  --sup-2: #212225;
+  --linea: #2e2f31; /* GUNMETAL GRAY */
+  --texto: #edf0f5; /* CLOUD ASH */
+  --apagado: #9ea3ab;
+  --acento: #ff4e1b; /* LAVA RUSH */
+  --acento-hos: #ff7448;
+  --peligro: #ff4e1b;
+  --ok: #ff4e1b;
+  --alerta: #edf0f5;
   --radio: 14px;
-  --sombra: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --sombra: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -44,7 +45,7 @@ body {
 
 ::selection {
   background: var(--acento);
-  color: #0b0d13;
+  color: #020305;
 }
 
 a {
@@ -123,7 +124,7 @@ code {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(11, 13, 19, 0.85);
+  background: rgba(2, 3, 5, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--linea);
 }
@@ -179,7 +180,7 @@ code {
 
 .navbar-links a.activo {
   color: var(--acento);
-  background: rgba(163, 230, 53, 0.1);
+  background: rgba(255, 78, 27, 0.1);
 }
 
 .navbar-acciones {
@@ -205,7 +206,7 @@ code {
   height: 26px;
   border-radius: 50%;
   background: var(--acento);
-  color: #0b0d13;
+  color: #020305;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -245,7 +246,7 @@ code {
 
 .btn-primario {
   background: var(--acento);
-  color: #0b0d13;
+  color: #020305;
 }
 
 .btn-primario:hover:not(:disabled) {
@@ -264,12 +265,14 @@ code {
 }
 
 .btn-peligro {
-  background: var(--peligro);
-  color: #2a0b0b;
+  background: transparent;
+  border: 1px solid var(--acento);
+  color: var(--acento);
 }
 
 .btn-peligro:hover:not(:disabled) {
-  filter: brightness(1.08);
+  background: var(--acento);
+  color: #020305;
 }
 
 .btn-sm {
@@ -322,7 +325,7 @@ code {
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  outline: 2px solid rgba(163, 230, 53, 0.45);
+  outline: 2px solid rgba(255, 78, 27, 0.45);
   border-color: var(--acento);
 }
 
@@ -344,9 +347,9 @@ code {
 }
 
 .alerta-err {
-  background: rgba(248, 113, 113, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.4);
-  color: #fecaca;
+  background: rgba(255, 78, 27, 0.12);
+  border: 1px solid rgba(255, 78, 27, 0.4);
+  color: #ffd2c4;
 }
 
 /* ------------------------------ Cards / secciones ------------------------------ */
@@ -362,9 +365,35 @@ code {
   padding: 3.2rem 0;
 }
 
-.seccion-oscura {
-  background: var(--fondo-2);
-  border-block: 1px solid var(--linea);
+.seccion-clara {
+  /* CLOUD ASH: sección clara para contrastar con el fondo BLACK CORE */
+  background: var(--texto);
+  color: var(--fondo);
+  border-block: 1px solid rgba(2, 3, 5, 0.15);
+}
+
+.seccion-clara h2,
+.seccion-clara h4 {
+  color: var(--fondo);
+}
+
+.seccion-clara .seccion-cab p {
+  color: #4a4f57;
+}
+
+.seccion-clara .paso {
+  background: #f7f9fc;
+  border-color: rgba(2, 3, 5, 0.12);
+  box-shadow: 0 10px 26px rgba(2, 3, 5, 0.08);
+}
+
+.seccion-clara .paso p {
+  color: #4a4f57;
+}
+
+.seccion-clara .paso-nro {
+  background: var(--acento);
+  color: #020305;
 }
 
 .seccion-cab {
@@ -390,8 +419,8 @@ code {
 .hero {
   padding: 4rem 0 4.5rem;
   background:
-    radial-gradient(600px 300px at 15% 0%, rgba(163, 230, 53, 0.12), transparent 60%),
-    radial-gradient(500px 320px at 90% 20%, rgba(99, 102, 241, 0.14), transparent 60%),
+    radial-gradient(600px 300px at 15% 0%, rgba(255, 78, 27, 0.16), transparent 60%),
+    radial-gradient(500px 320px at 90% 20%, rgba(237, 240, 245, 0.07), transparent 60%),
     var(--fondo);
   border-bottom: 1px solid var(--linea);
 }
@@ -405,9 +434,9 @@ code {
 
 .hero-ola {
   display: inline-block;
-  background: rgba(163, 230, 53, 0.12);
+  background: rgba(255, 78, 27, 0.12);
   color: var(--acento);
-  border: 1px solid rgba(163, 230, 53, 0.35);
+  border: 1px solid rgba(255, 78, 27, 0.35);
   padding: 0.3rem 0.8rem;
   border-radius: 999px;
   font-size: 0.85rem;
@@ -492,7 +521,7 @@ code {
 .panel-hora.libre {
   border-color: var(--acento);
   color: var(--acento);
-  background: rgba(163, 230, 53, 0.08);
+  background: rgba(255, 78, 27, 0.08);
   font-weight: 700;
 }
 
@@ -526,7 +555,7 @@ code {
 
 .sala-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(163, 230, 53, 0.55);
+  border-color: rgba(255, 78, 27, 0.55);
   text-decoration: none;
 }
 
@@ -577,7 +606,7 @@ code {
 
 .dia-chip.abierto {
   color: var(--acento);
-  border-color: rgba(163, 230, 53, 0.4);
+  border-color: rgba(255, 78, 27, 0.4);
 }
 
 .sala-ver {
@@ -609,7 +638,7 @@ code {
   height: 34px;
   border-radius: 50%;
   background: var(--acento);
-  color: #0b0d13;
+  color: #020305;
   font-weight: 800;
   margin-bottom: 0.7rem;
 }
@@ -647,8 +676,8 @@ code {
 }
 
 .detalle-precio {
-  background: rgba(163, 230, 53, 0.1);
-  border: 1px solid rgba(163, 230, 53, 0.4);
+  background: rgba(255, 78, 27, 0.1);
+  border: 1px solid rgba(255, 78, 27, 0.4);
   border-radius: var(--radio);
   padding: 0.8rem 1.2rem;
   text-align: center;
@@ -824,12 +853,12 @@ code {
 }
 
 .cal-celda.hoy {
-  border-color: rgba(163, 230, 53, 0.5);
+  border-color: rgba(255, 78, 27, 0.5);
 }
 
 .cal-celda.sel {
   background: var(--acento);
-  color: #0b0d13;
+  color: #020305;
   font-weight: 800;
 }
 
@@ -861,7 +890,7 @@ code {
 }
 
 .pt-ocupado {
-  background: #3a4158;
+  background: #2e2f31;
 }
 
 .pt-mio {
@@ -869,8 +898,8 @@ code {
 }
 
 .pt-pasado {
-  background: #1c2130;
-  opacity: 0.6;
+  background: #17181a;
+  opacity: 0.8;
 }
 
 /* Turnos / slots */
@@ -933,11 +962,11 @@ code {
 .slot.mio {
   background: var(--acento);
   border-color: var(--acento);
-  color: #0b0d13;
+  color: #020305;
 }
 
 .slot.mio span {
-  color: #1c2b0b;
+  color: rgba(2, 3, 5, 0.75);
   font-weight: 700;
 }
 
@@ -1125,20 +1154,20 @@ code {
 
 .badge-ok {
   color: var(--ok);
-  border-color: rgba(74, 222, 128, 0.4);
-  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(255, 78, 27, 0.4);
+  background: rgba(255, 78, 27, 0.1);
 }
 
 .badge-err {
-  color: var(--peligro);
-  border-color: rgba(248, 113, 113, 0.4);
-  background: rgba(248, 113, 113, 0.1);
+  color: var(--apagado);
+  border-color: rgba(237, 240, 245, 0.28);
+  background: rgba(237, 240, 245, 0.06);
 }
 
 .badge-admin {
   color: var(--alerta);
-  border-color: rgba(251, 191, 36, 0.4);
-  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(237, 240, 245, 0.4);
+  background: rgba(237, 240, 245, 0.1);
 }
 
 /* ------------------------------ Modal ------------------------------ */
@@ -1146,7 +1175,7 @@ code {
 .modal-fondo {
   position: fixed;
   inset: 0;
-  background: rgba(4, 6, 10, 0.72);
+  background: rgba(2, 3, 5, 0.72);
   backdrop-filter: blur(4px);
   display: grid;
   place-items: center;
@@ -1242,11 +1271,14 @@ code {
 }
 
 .toast-err {
-  border-left-color: var(--peligro);
+  background: var(--acento);
+  border-color: var(--acento);
+  color: #020305;
+  font-weight: 600;
 }
 
 .toast-info {
-  border-left-color: #60a5fa;
+  border-left-color: var(--texto);
 }
 
 .toast-icono {
@@ -1255,7 +1287,11 @@ code {
 }
 
 .toast-err .toast-icono {
-  color: var(--peligro);
+  color: #020305;
+}
+
+.toast-info .toast-icono {
+  color: var(--texto);
 }
 
 @keyframes toast-entra {
