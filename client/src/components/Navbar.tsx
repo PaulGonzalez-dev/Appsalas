@@ -42,7 +42,7 @@ export default function Navbar() {
 
         <nav className="navbar-links" aria-label="Principal">
           <NavLink to="/reservar">Reservar</NavLink>
-          <NavLink to="/#salas">Salas</NavLink>
+          <NavLink to="/#cercanas">Salas</NavLink>
           {user && <NavLink to="/mis-turnos">Mis turnos</NavLink>}
           {user?.rol === 'admin' && <NavLink to="/admin">Administración</NavLink>}
         </nav>

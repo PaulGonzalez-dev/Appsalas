@@ -1,73 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { api } from '../api';
-import type { Sala } from '../types';
-import { Spinner, Vacio } from '../components/UI';
-import { DIAS_CORTOS, fmtPrecio } from '../utils';
 import SalasCercanas from '../components/SalasCercanas';
 
-function horarioDe(sala: Sala, dia: number): string {
-  const d = sala.disponibilidad?.find((x) => x.dia_semana === dia);
-  return d ? `${d.hora_inicio}–${d.hora_fin}` : 'Cerrado';
-}
-
 export default function Home() {
-  const [salas, setSalas] = useState<Sala[] | null>(null);
-
-  useEffect(() => {
-    api<Sala[]>('/api/salas')
-      .then(setSalas)
-      .catch(() => setSalas([]));
-  }, []);
-
   return (
     <div>
       {/* Salas cercanas al usuario */}
       <SalasCercanas />
-
-      {/* Salas */}
-      <section className="seccion" id="salas">
-        <div className="contenedor">
-          <div className="seccion-cab">
-            <h2>Nuestras salas</h2>
-            <p>Elegí la que mejor se adapte a tu ensayo.</p>
-          </div>
-
-          {salas === null ? (
-            <Spinner texto="Cargando salas…" />
-          ) : salas.length === 0 ? (
-            <Vacio titulo="Todavía no hay salas cargadas" />
-          ) : (
-            <div className="grilla-salas">
-              {salas.map((s) => (
-                <Link key={s.id} to={`/salas/${s.id}`} className="sala-card">
-                  <div className="sala-card-cab">
-                    <h3>{s.nombre}</h3>
-                    <span className="sala-precio">{fmtPrecio(s.precio_hora)}</span>
-                  </div>
-                  <p className="sala-desc">{s.descripcion}</p>
-                  <div className="sala-meta">
-                    <span>👥 {s.capacidad} personas</span>
-                    <span>⏱ {s.slot_minutos} min</span>
-                  </div>
-                  <div className="sala-dias">
-                    {DIAS_CORTOS.map((d, i) => {
-                      const dia = (i + 1) % 7; // Lun=1 … Dom=0
-                      const abierto = !!s.disponibilidad?.find((x) => x.dia_semana === dia);
-                      return (
-                        <span key={d} className={`dia-chip${abierto ? ' abierto' : ''}`}>
-                          {d}
-                        </span>
-                      );
-                    })}
-                  </div>
-                  <span className="sala-ver">Ver detalle y reservar →</span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* Pasos */}
       <section className="seccion seccion-clara">
