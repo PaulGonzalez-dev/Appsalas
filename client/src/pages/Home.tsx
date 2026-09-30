@@ -22,52 +22,6 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="hero">
-        <div className="contenedor hero-dentro">
-          <div className="hero-texto">
-            <span className="hero-ola">♪ Ensayá cuando quieras</span>
-            <h1>
-              Tu sala de ensayo,
-              <br />
-              <span className="texto-acento">lista cuando vos</span>.
-            </h1>
-            <p className="hero-bajada">
-              Mirá la disponibilidad en vivo, reservá tu turno en segundos y confirmá todo desde el
-              calendario. Sin llamados, sin esperas, sin papelito.
-            </p>
-            <div className="hero-cta">
-              <Link to="/reservar" className="btn btn-primario btn-lg">
-                Reservar un turno
-              </Link>
-              <a href="#salas" className="btn btn-ghost btn-lg">
-                Ver las salas
-              </a>
-            </div>
-            <ul className="hero-puntos">
-              <li>Calendario en vivo</li>
-              <li>Cancelás cuando quieras</li>
-              <li>Equipamiento incluido</li>
-            </ul>
-          </div>
-          <div className="hero-panel" aria-hidden>
-            <div className="panel-titulo">
-              <span className="panel-punto" />
-              Disponibilidad de hoy
-            </div>
-            <div className="panel-horas">
-              {['16:00', '17:00', '18:00', '19:00', '20:00'].map((h, i) => (
-                <div key={h} className={`panel-hora${i === 3 ? ' libre' : ''}`}>
-                  <span>{h}</span>
-                  <span>{i === 3 ? 'Libre' : 'Ocupado'}</span>
-                </div>
-              ))}
-            </div>
-            <div className="panel-pie">Sala Metrónomo · turno de 1 hora</div>
-          </div>
-        </div>
-      </section>
-
       {/* Salas cercanas al usuario */}
       <SalasCercanas />
 

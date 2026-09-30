@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
+import { useCallback, useEffect, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api';
 import { useToast } from '../toast';
@@ -92,7 +92,6 @@ export default function SalasCercanas() {
   const navigate = useNavigate();
   const [origen, setOrigen] = useState<Origen>({ tipo: 'cargando' });
   const [salas, setSalas] = useState<Sala[] | null>(null);
-  const carrRef = useRef<HTMLDivElement>(null);
 
   const pedirGPS = useCallback(() => {
     if (!('geolocation' in navigator)) {
@@ -128,10 +127,6 @@ export default function SalasCercanas() {
     if (idx === '') return;
     const z = ZONAS[Number(idx)];
     setOrigen({ tipo: 'zona', nombre: z.nombre, lat: z.lat, lng: z.lng });
-  }
-
-  function mover(dir: number) {
-    carrRef.current?.scrollBy({ left: dir * 310, behavior: 'smooth' });
   }
 
   const nombreZona = origen.tipo === 'zona' ? origen.nombre : null;
@@ -181,40 +176,34 @@ export default function SalasCercanas() {
         ) : salas.length === 0 ? (
           <Vacio titulo="Todavía no hay salas cargadas" />
         ) : (
-          <div className="carrusel-envoltura">
-            <button className="carr-nav prev" onClick={() => mover(-1)} aria-label="Ver anteriores">
-              ‹
-            </button>
-            <div className="carrusel" ref={carrRef}>
-              {salas.map((s) => (
-                <article
-                  key={s.id}
-                  className="cerc-card"
-                  role="link"
-                  tabIndex={0}
-                  onClick={() => navigate(`/salas/${s.id}`)}
-                  onKeyDown={(e: KeyboardEvent) => {
-                    if (e.key === 'Enter') navigate(`/salas/${s.id}`);
-                  }}
-                >
-                  <CarruselFotos imagenes={s.imagenes || []} alt={s.nombre} />
-                  <div className="cerc-cuerpo">
-                    <div className="cerc-fila">
-                      <h3 className="cerc-nombre">{s.nombre}</h3>
-                      <span className="cerc-dist">{fmtDist(s.distancia_km)}</span>
-                    </div>
-                    <span className="cerc-barrio">📍 {s.barrio || 'Sin barrio cargado'}</span>
-                    <div className="cerc-precio">
-                      <strong>{fmtPrecio(s.precio_hora * 2)}</strong>
-                      <span>turno de 2 h</span>
-                    </div>
+          <div className="cerc-lista">
+            {salas.map((s) => (
+              <article
+                key={s.id}
+                className="cerc-card"
+                role="link"
+                tabIndex={0}
+                onClick={() => navigate(`/salas/${s.id}`)}
+                onKeyDown={(e: KeyboardEvent) => {
+                  if (e.key === 'Enter') navigate(`/salas/${s.id}`);
+                }}
+              >
+                <CarruselFotos imagenes={s.imagenes || []} alt={s.nombre} />
+                <div className="cerc-cuerpo">
+                  <div className="cerc-fila">
+                    <h3 className="cerc-nombre">{s.nombre}</h3>
+                    <span className="cerc-dist">{fmtDist(s.distancia_km)}</span>
                   </div>
-                </article>
-              ))}
-            </div>
-            <button className="carr-nav next" onClick={() => mover(1)} aria-label="Ver siguientes">
-              ›
-            </button>
+                  <span className="cerc-barrio">📍 {s.barrio || 'Sin barrio cargado'}</span>
+                  <p className="cerc-desc">{s.descripcion}</p>
+                  <div className="cerc-precio">
+                    <strong>{fmtPrecio(s.precio_hora * 2)}</strong>
+                    <span>turno de 2 h</span>
+                    <span className="cerc-ver">Ver sala →</span>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         )}
       </div>
