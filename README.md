@@ -1,0 +1,103 @@
+# 🎸 AppSalas
+
+Aplicación para la **gestión de turnos de salas de ensayo musical**.
+Los músicos ven la disponibilidad en vivo en un calendario y reservan su turno;
+el administrador gestiona salas, horarios de atención y reservas.
+
+## Stack
+
+| Capa      | Tecnología                                              |
+| --------- | ------------------------------------------------------- |
+| Frontend  | React 18 + TypeScript + Vite + React Router             |
+| Backend   | Node.js + Express (API REST)                            |
+| Base de datos | SQLite (`better-sqlite3`) — sin servicios externos  |
+| Auth      | JWT (`jsonwebtoken`) + `bcryptjs`                       |
+
+## Features (MVP)
+
+- **Roles**: administrador y músico.
+- **Salas**: CRUD con descripción, equipamiento, precio por hora, capacidad y duración del turno.
+- **Disponibilidad**: por sala y día de la semana (desde/hasta), configurable por el admin.
+- **Calendario de turnos**: grilla diaria generada automáticamente (libre / ocupado / pasado / tu turno).
+- **Reservas**: crear, cancelar (dueño o admin), historial y próximos turnos.
+- **Panel de administración**: salas, disponibilidad y listado de reservas con filtros.
+- Interfaz 100% en español (rioplatense), tema oscuro responsive.
+
+## Puesta en marcha
+
+```bash
+# 1. Instalar dependencias (workspaces: server + client)
+npm install
+
+# 2. Crear/cargar datos de prueba (usuarios, salas, reservas demo)
+npm run seed
+
+# 3. Levantar API (puerto 3001) + frontend (puerto 5173)
+npm run dev
+```
+
+Abrí **http://localhost:5173**
+
+### Usuarios de prueba
+
+| Rol          | Email             | Contraseña |
+| ------------ | ----------------- | ---------- |
+| Administrador | `admin@salas.com` | `admin123` |
+| Músico       | `musico@demo.com` | `demo123`  |
+
+La base se crea en `server/data/appsalas.db` (ignorada por git). Para reiniciar
+de cero: borrá ese archivo y volvé a correr `npm run seed`.
+
+## Estructura
+
+```
+Appsalas/
+├── server/                # API Express (ESM)
+│   ├── src/
+│   │   ├── index.js       # arranque + rutas
+│   │   ├── db.js          # esquema SQLite
+│   │   ├── auth.js        # JWT + middleware
+│   │   ├── seed.js        # datos de prueba
+│   │   ├── util.js        # fechas/horas/validaciones
+│   │   └── routes/
+│   │       ├── auth.js    # registro / login / me
+│   │       ├── salas.js   # CRUD salas + disponibilidad
+│   │       └── reservas.js # turnos + reservas
+│   └── data/              # base SQLite (gitignored)
+└── client/                # Vite + React + TS
+    └── src/
+        ├── api.ts         # fetch con token
+        ├── auth.tsx       # contexto de sesión
+        ├── toast.tsx      # notificaciones
+        ├── components/    # Navbar, CalendarioMes, UI
+        └── pages/         # Home, Reservar, MisTurnos, Admin, …
+```
+
+## API
+
+| Método | Ruta                                | Accesibilidad | Descripción |
+| ------ | ----------------------------------- | ------------- | ----------- |
+| POST   | `/api/auth/registro`                | público       | Crear cuenta músico |
+| POST   | `/api/auth/login`                   | público       | Login → token JWT |
+| GET    | `/api/auth/me`                      | sesión        | Usuario actual |
+| GET    | `/api/salas`                        | público       | Salas activas + disponibilidad |
+| GET    | `/api/salas/:id`                    | público       | Detalle de sala |
+| POST   | `/api/salas`                        | admin         | Crear sala |
+| PUT    | `/api/salas/:id`                    | admin         | Editar sala |
+| DELETE | `/api/salas/:id`                    | admin         | Baja lógica |
+| PUT    | `/api/salas/:id/disponibilidad`     | admin         | Reemplazar horarios semanales |
+| GET    | `/api/turnos?fecha=AAAA-MM-DD&sala_id=` | sesión opcional | Grilla de turnos del día |
+| GET    | `/api/reservas?scope=mias\|todas&…` | sesión        | Listado (admin puede ver todas) |
+| POST   | `/api/reservas`                     | sesión        | Reservar turno |
+| DELETE | `/api/reservas/:id`                 | dueño/admin   | Cancelar reserva |
+
+Variables de entorno (opcionales): `PORT` (3001), `JWT_SECRET`, `TZ`
+(por defecto `America/Argentina/Buenos_Aires`), `APPSALAS_DATA_DIR`.
+
+## Roadmap
+
+- [ ] Notificaciones por email al confirmar/cancelar
+- [ ] Pagos online (MercadoPago)
+- [ ] Reservas recurrentes / mensuales
+- [ ] Múltiples sedes
+- [ ] Reportes de ocupación e ingresos

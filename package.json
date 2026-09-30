@@ -1,0 +1,19 @@
+{
+  "name": "appsalas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aplicación para la gestión de turnos de salas de ensayo musical",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,lime \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "seed": "npm run seed -w server",
+    "start": "npm run start -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
