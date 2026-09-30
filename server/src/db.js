@@ -19,6 +19,17 @@ CREATE TABLE IF NOT EXISTS usuarios (
   email TEXT NOT NULL UNIQUE COLLATE NOCASE,
   password_hash TEXT NOT NULL,
   rol TEXT NOT NULL DEFAULT 'musico' CHECK (rol IN ('admin', 'musico')),
+  foto TEXT NOT NULL DEFAULT '',
+  telefono TEXT NOT NULL DEFAULT '',
+  bio TEXT NOT NULL DEFAULT '',
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS bandas (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  nombre TEXT NOT NULL,
+  instrumento TEXT NOT NULL DEFAULT '',
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -75,5 +86,8 @@ if (!columna('salas', 'barrio')) db.exec("ALTER TABLE salas ADD COLUMN barrio TE
 if (!columna('salas', 'lat')) db.exec('ALTER TABLE salas ADD COLUMN lat REAL');
 if (!columna('salas', 'lng')) db.exec('ALTER TABLE salas ADD COLUMN lng REAL');
 if (!columna('salas', 'imagenes')) db.exec("ALTER TABLE salas ADD COLUMN imagenes TEXT NOT NULL DEFAULT '[]'");
+if (!columna('usuarios', 'foto')) db.exec("ALTER TABLE usuarios ADD COLUMN foto TEXT NOT NULL DEFAULT ''");
+if (!columna('usuarios', 'telefono')) db.exec("ALTER TABLE usuarios ADD COLUMN telefono TEXT NOT NULL DEFAULT ''");
+if (!columna('usuarios', 'bio')) db.exec("ALTER TABLE usuarios ADD COLUMN bio TEXT NOT NULL DEFAULT ''");
 
 export default db;

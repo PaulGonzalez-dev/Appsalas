@@ -5,6 +5,19 @@ export interface User {
   nombre: string;
   email: string;
   rol: Rol;
+  foto?: string;
+}
+
+export interface Banda {
+  id?: number;
+  nombre: string;
+  instrumento: string;
+}
+
+export interface Perfil extends User {
+  telefono: string;
+  bio: string;
+  bandas: Banda[];
 }
 
 export interface Session {

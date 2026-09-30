@@ -41,8 +41,7 @@ export default function Navbar() {
         </Link>
 
         <nav className="navbar-links" aria-label="Principal">
-          <NavLink to="/reservar">Reservar</NavLink>
-          <NavLink to="/#cercanas">Salas</NavLink>
+          <NavLink to="/perfil">Mi perfil</NavLink>
           {user && <NavLink to="/mis-turnos">Mis turnos</NavLink>}
           {user?.rol === 'admin' && <NavLink to="/admin">Administración</NavLink>}
         </nav>
@@ -51,7 +50,9 @@ export default function Navbar() {
           {user ? (
             <>
               <span className="chip-usuario" title={user.email}>
-                <span className="avatar">{user.nombre.charAt(0).toUpperCase()}</span>
+                <span className="avatar">
+                {user.foto ? <img src={user.foto} alt="" /> : user.nombre.charAt(0).toUpperCase()}
+              </span>
                 <span className="chip-nombre">{user.nombre.split(' ')[0]}</span>
                 {user.rol === 'admin' && <span className="badge badge-admin">admin</span>}
               </span>

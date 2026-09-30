@@ -17,6 +17,19 @@ function seedUsuarios() {
   console.log('→ Usuarios de prueba creados');
 }
 
+function seedBandas() {
+  const total = db.prepare('SELECT COUNT(*) AS n FROM bandas').get().n;
+  if (total > 0) return;
+  const musico = db.prepare("SELECT id FROM usuarios WHERE rol = 'musico'").get();
+  if (!musico) return;
+  const insert = db.prepare(
+    'INSERT INTO bandas (usuario_id, nombre, instrumento) VALUES (?, ?, ?)'
+  );
+  insert.run(musico.id, 'Los Delirios', 'Guitarra y voz');
+  insert.run(musico.id, 'Trío Nocturno', 'Bajo');
+  console.log('→ Bandas de prueba creadas');
+}
+
 const SALAS = [
   {
     nombre: 'Sala Metrónomo',
@@ -179,6 +192,7 @@ function seedReservas() {
 }
 
 seedUsuarios();
+seedBandas();
 seedSalas();
 seedReservas();
 console.log('✅ Base de datos lista (server/data/playr.db)');

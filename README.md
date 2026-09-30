@@ -18,6 +18,7 @@ el administrador gestiona salas, horarios de atención y reservas.
 - **Roles**: administrador y músico.
 - **Salas**: CRUD con descripción, equipamiento, precio por hora, capacidad y duración del turno.
 - **Disponibilidad**: por sala y día de la semana (desde/hasta), configurable por el admin.
+- **Mi perfil**: foto de perfil (se recorta cuadrado en el navegador), datos personales (nombre, teléfono, bio) y las bandas en las que tocás con tu instrumento
 - **Salas cercanas**: geolocalización del usuario (con fallback por zona), distancia en km/m y carrusel de fotos por sala, con precio por turno de 2 horas
 - **Calendario de turnos**: grilla diaria generada automáticamente (libre / ocupado / pasado / tu turno).
 - **Reservas**: crear, cancelar (dueño o admin), historial y próximos turnos.
@@ -81,6 +82,9 @@ Appsalas/
 | POST   | `/api/auth/registro`                | público       | Crear cuenta músico |
 | POST   | `/api/auth/login`                   | público       | Login → token JWT |
 | GET    | `/api/auth/me`                      | sesión        | Usuario actual |
+| GET    | `/api/auth/perfil`                  | sesión        | Perfil completo + bandas |
+| PUT    | `/api/auth/perfil`                  | sesión        | Actualizar nombre, teléfono, bio o foto |
+| PUT    | `/api/auth/bandas`                  | sesión        | Reemplazar la lista de bandas |
 | GET    | `/api/salas`                        | público       | Salas activas + disponibilidad |
 | GET    | `/api/salas/:id`                    | público       | Detalle de sala |
 | POST   | `/api/salas`                        | admin         | Crear sala |

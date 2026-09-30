@@ -9,6 +9,7 @@ import MisTurnos from './pages/MisTurnos';
 import Login from './pages/Login';
 import Registro from './pages/Registro';
 import Admin from './pages/Admin';
+import Perfil from './pages/Perfil';
 import type { ReactNode } from 'react';
 
 function RequiereSesion({
@@ -59,6 +60,14 @@ export default function App() {
               />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
+              <Route
+                path="/perfil"
+                element={
+                  <RequiereSesion>
+                    <Perfil />
+                  </RequiereSesion>
+                }
+              />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

@@ -18,7 +18,8 @@ function usuarioDelToken(token) {
   try {
     const payload = jwt.verify(token, SECRETO);
     return (
-      db.prepare('SELECT id, nombre, email, rol FROM usuarios WHERE id = ?').get(payload.sub) || null
+      db.prepare('SELECT id, nombre, email, rol, foto FROM usuarios WHERE id = ?').get(payload.sub) ||
+      null
     );
   } catch {
     return null;

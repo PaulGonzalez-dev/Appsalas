@@ -7,6 +7,7 @@ interface AuthContexto {
   login: (email: string, password: string) => Promise<User>;
   registro: (nombre: string, email: string, password: string) => Promise<User>;
   logout: () => void;
+  actualizar: (parcial: Partial<User>) => void;
 }
 
 const Ctx = createContext<AuthContexto | null>(null);
@@ -39,8 +40,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSesion(null);
   }
 
+  function actualizar(parcial: Partial<User>) {
+    setSesion((s) => {
+      if (!s) return s;
+      const nueva: Session = { ...s, user: { ...s.user, ...parcial } };
+      guardarSesion(nueva);
+      return nueva;
+    });
+  }
+
   return (
-    <Ctx.Provider value={{ user: sesion?.user ?? null, login, registro, logout }}>
+    <Ctx.Provider value={{ user: sesion?.user ?? null, login, registro, logout, actualizar }}>
       {children}
     </Ctx.Provider>
   );
