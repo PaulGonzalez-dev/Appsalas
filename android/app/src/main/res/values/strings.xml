@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Playr</string>
+    <string name="title_activity_main">Playr</string>
+    <string name="package_name">com.playr.app</string>
+    <string name="custom_url_scheme">com.playr.app</string>
+</resources>

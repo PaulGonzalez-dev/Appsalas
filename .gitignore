@@ -5,3 +5,12 @@ server/data/
 .DS_Store
 .env
 .env.local
+
+# Android (generado)
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+*.keystore

@@ -124,3 +124,29 @@ Detalles del blueprint:
 - [ ] Reservas recurrentes / mensuales
 - [ ] Múltiples sedes
 - [ ] Reportes de ocupación e ingresos
+
+---
+
+## 📱 App Android (Capacitor)
+
+Playr se empaqueta como app de Android con [Capacitor](https://capacitorjs.com) (`android/`,
+proyecto nativo generado a partir del build web). No hay reescritura: la misma app React
+corre dentro del WebView nativo con acceso a GPS y pantalla completa (sin barra del navegador).
+
+### Generar el APK
+
+El workflow **`.github/workflows/android.yml`** construye el APK en cada push a `main`
+(o manualmente desde *Actions → Android APK → Run workflow*):
+
+1. **Descargar:** GitHub → pestaña **Actions** → último run → artifact **`Playr-debug`** → `app-debug.apk`.
+2. **Instalar en el celular:** copiar el APK y abrirlo (Android pide permitir instalación de orígenes desconocidos).
+
+La app se conecta a la API indicada en `VITE_API_URL` (por defecto `https://appsalas.onrender.com`,
+el servicio del `render.yaml`). En el build de web local usa rutas relativas (proxy de Vite).
+
+### Configuración nativa
+
+- `capacitor.config.ts` — appId `com.playr.app`, nombre **Playr**, webDir `client/dist`.
+- `assets/logo.png` (1024×1024) — fuente de iconos e splash (`npx @capacitor/assets generate --android`).
+- Permisos: `INTERNET`, `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` (ubicación vía
+  `@capacitor/geolocation` con pedido de permiso en runtime; en web sigue siendo la API estándar).

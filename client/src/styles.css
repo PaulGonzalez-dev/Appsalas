@@ -1743,3 +1743,25 @@ code {
     justify-self: start;
   }
 }
+
+/* ------------------------------ Android / táctil ------------------------------ */
+* {
+  -webkit-tap-highlight-color: rgba(255, 78, 27, 0.25);
+}
+
+/* Sin auto-zoom al enfocar campos en Android (WebView exige ≥16px) */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+/* El menú del nav se siente táctil: nada de selects de 14px heredados */
+.navbar a,
+.navbar button {
+  min-height: 40px;
+}

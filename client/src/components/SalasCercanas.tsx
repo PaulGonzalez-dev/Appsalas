@@ -6,6 +6,7 @@ import type { Sala } from '../types';
 import { Spinner, Vacio } from './UI';
 import CarruselFotos from './CarruselFotos';
 import { fmtPrecio } from '../utils';
+import { obtenerUbicacion } from '../ubicacion';
 
 type Origen =
   | { tipo: 'cargando' }
@@ -28,16 +29,10 @@ export default function SalasCercanas() {
   const [precioMax, setPrecioMax] = useState<number | null>(null);
 
   const pedirGPS = useCallback(() => {
-    if (!('geolocation' in navigator)) {
-      setOrigen({ tipo: 'sin' });
-      return;
-    }
     setOrigen({ tipo: 'cargando' });
-    navigator.geolocation.getCurrentPosition(
-      (pos) => setOrigen({ tipo: 'gps', lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => setOrigen({ tipo: 'sin' }),
-      { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
-    );
+    obtenerUbicacion()
+      .then(({ lat, lng }) => setOrigen({ tipo: 'gps', lat, lng }))
+      .catch(() => setOrigen({ tipo: 'sin' }));
   }, []);
 
   useEffect(() => {

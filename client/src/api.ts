@@ -1,6 +1,8 @@
 import type { Session } from './types';
 
 const CLAVE = 'playr_sesion';
+/** En la app Android (VITE_API_URL) apunta al servidor de producción; en web, rutas relativas. */
+const BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
 
 export class ApiError extends Error {
   status: number;
@@ -36,7 +38,7 @@ interface Opciones {
 
 export async function api<T>(ruta: string, opciones: Opciones = {}): Promise<T> {
   const sesion = leerSesion();
-  const res = await fetch(ruta, {
+  const res = await fetch(`${BASE}${ruta}`, {
     method: opciones.method || 'GET',
     headers: {
       'Content-Type': 'application/json',
