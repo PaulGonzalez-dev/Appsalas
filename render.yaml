@@ -1,0 +1,26 @@
+# Blueprint de Render: un solo servicio que sirve API + frontend buildado.
+# Botón de deploy: https://render.com/deploy?repo=https://github.com/PaulGonzalez-dev/Appsalas
+services:
+  - type: web
+    name: appsalas
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/salud
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: JWT_SECRET
+        generateValue: true
+
+# Nota: el plan gratuito de Render no tiene disco persistente, así que la base
+# SQLite se regenera (con datos de demo) en cada deploy. Para conservar datos
+# reales, agregá un disco y definí APPSALAS_DATA_DIR apuntando al mount:
+#
+#    disk:
+#      name: appsalas-data
+#      mountPath: /var/data
+#      sizeGB: 1
+#
+# y en envVars:  - key: APPSALAS_DATA_DIR  value: /var/data

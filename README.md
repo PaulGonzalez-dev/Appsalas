@@ -94,6 +94,23 @@ Appsalas/
 Variables de entorno (opcionales): `PORT` (3001), `JWT_SECRET`, `TZ`
 (por defecto `America/Argentina/Buenos_Aires`), `APPSALAS_DATA_DIR`.
 
+## Despliegue (Render — gratis, sin tarjeta)
+
+El servicio único de Express sirve la API **y** el build del frontend (via `render.yaml`):
+
+1. Abrí el botón: **[Deploy to Render](https://render.com/deploy?repo=https://github.com/PaulGonzalez-dev/Appsalas)**
+2. Conectá tu cuenta de GitHub y elegí el repo `PaulGonzalez-dev/Appsalas`
+3. Render lee el blueprint (`render.yaml`), crea el servicio y lo levanta
+4. Tu app queda en `https://appsalas-xxxx.onrender.com`
+
+Detalles del blueprint:
+
+- **Build**: `npm install && npm run build` · **Start**: `npm start` (siembra datos demo si la DB está vacía y arranca la API)
+- `JWT_SECRET` se genera automáticamente; `healthCheckPath: /api/salud`
+- ⚠️ El plan gratuito **no tiene disco persistente**: la base SQLite se regenera con
+  datos de demo en cada deploy. Para producción real, agregá un disco (plan pago)
+  o migrá a Postgres — las instrucciones están comentadas en `render.yaml`
+
 ## Roadmap
 
 - [ ] Notificaciones por email al confirmar/cancelar

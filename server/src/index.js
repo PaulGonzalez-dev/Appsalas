@@ -1,9 +1,14 @@
 import './tz.js';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import salasRoutes from './routes/salas.js';
 import reservasRoutes from './routes/reservas.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -17,6 +22,16 @@ app.get('/api/salud', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/salas', salasRoutes);
 app.use('/', reservasRoutes);
+
+// En producción (deploy) Express sirve el build del frontend y resuelve el SPA.
+const distDir = path.resolve(__dirname, '..', '..', 'client', 'dist');
+if (fs.existsSync(path.join(distDir, 'index.html'))) {
+  app.use(express.static(distDir));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
