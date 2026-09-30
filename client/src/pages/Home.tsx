@@ -4,6 +4,7 @@ import { api } from '../api';
 import type { Sala } from '../types';
 import { Spinner, Vacio } from '../components/UI';
 import { DIAS_CORTOS, fmtPrecio } from '../utils';
+import SalasCercanas from '../components/SalasCercanas';
 
 function horarioDe(sala: Sala, dia: number): string {
   const d = sala.disponibilidad?.find((x) => x.dia_semana === dia);
@@ -66,6 +67,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Salas cercanas al usuario */}
+      <SalasCercanas />
 
       {/* Salas */}
       <section className="seccion" id="salas">

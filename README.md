@@ -18,6 +18,7 @@ el administrador gestiona salas, horarios de atención y reservas.
 - **Roles**: administrador y músico.
 - **Salas**: CRUD con descripción, equipamiento, precio por hora, capacidad y duración del turno.
 - **Disponibilidad**: por sala y día de la semana (desde/hasta), configurable por el admin.
+- **Salas cercanas**: geolocalización del usuario (con fallback por zona), distancia en km/m y carrusel de fotos por sala, con precio por turno de 2 horas
 - **Calendario de turnos**: grilla diaria generada automáticamente (libre / ocupado / pasado / tu turno).
 - **Reservas**: crear, cancelar (dueño o admin), historial y próximos turnos.
 - **Panel de administración**: salas, disponibilidad y listado de reservas con filtros.

@@ -21,6 +21,10 @@ export interface Disponibilidad {
 export interface Sala {
   id: number;
   nombre: string;
+  barrio: string;
+  lat: number | null;
+  lng: number | null;
+  imagenes: string[];
   descripcion: string;
   equipamiento: string;
   precio_hora: number;
@@ -29,6 +33,7 @@ export interface Sala {
   activa: number;
   creado_en?: string;
   disponibilidad?: Disponibilidad[];
+  distancia_km?: number | null;
 }
 
 export interface Turno {

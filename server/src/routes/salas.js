@@ -2,7 +2,7 @@ import '../tz.js';
 import { Router } from 'express';
 import db from '../db.js';
 import { authRequired, soloAdmin } from '../auth.js';
-import { malo, RE_HORA, aMinutos } from '../util.js';
+import { malo, RE_HORA, aMinutos, distanciaKm, conImagenes } from '../util.js';
 
 const r = Router();
 
@@ -13,7 +13,29 @@ function traerDisponibilidad(salaId) {
 }
 
 function conDisponibilidad(sala) {
-  return { ...sala, disponibilidad: traerDisponibilidad(sala.id) };
+  return { ...conImagenes(sala), disponibilidad: traerDisponibilidad(sala.id) };
+}
+
+/** Normaliza lat/lng opcionales del body. Devuelve string de error o valor. */
+function normalizarCoord(v) {
+  if (v === undefined) return { omitido: true };
+  if (v === null || v === '') return { valor: null };
+  const n = Number(v);
+  if (!Number.isFinite(n)) return { error: 'Coordenada inválida' };
+  return { valor: n };
+}
+
+function validarCoords(lat, lng) {
+  if (lat !== null && lat !== undefined && (lat < -90 || lat > 90)) return 'Latitud inválida';
+  if (lng !== null && lng !== undefined && (lng < -180 || lng > 180)) return 'Longitud inválida';
+  return null;
+}
+
+function normalizarImagenes(v) {
+  if (v === undefined) return { omitido: true };
+  if (!Array.isArray(v)) return { error: 'Imágenes inválidas' };
+  const limpias = v.filter((x) => typeof x === 'string' && x.length <= 400).slice(0, 8);
+  return { valor: JSON.stringify(limpias) };
 }
 
 const DISPO_DEFECTO = [
@@ -58,9 +80,29 @@ function guardarDisponibilidad(salaId, lista) {
 
 // ---------- PÚBLICO ----------
 
-r.get('/', (_req, res) => {
-  const salas = db.prepare('SELECT * FROM salas WHERE activa = 1 ORDER BY nombre').all();
-  res.json(salas.map(conDisponibilidad));
+// GET /api/salas?lat=&lng= → opcionalmente ordena por distancia al usuario.
+r.get('/', (req, res) => {
+  let salas = db
+    .prepare('SELECT * FROM salas WHERE activa = 1 ORDER BY nombre')
+    .all()
+    .map(conDisponibilidad);
+
+  const lat = req.query.lat !== undefined ? Number(req.query.lat) : null;
+  const lng = req.query.lng !== undefined ? Number(req.query.lng) : null;
+
+  if (lat !== null && lng !== null && Number.isFinite(lat) && Number.isFinite(lng)) {
+    salas = salas
+      .map((s) => ({
+        ...s,
+        distancia_km:
+          Number.isFinite(s.lat) && Number.isFinite(s.lng)
+            ? Math.round(distanciaKm(lat, lng, s.lat, s.lng) * 10) / 10
+            : null,
+      }))
+      .sort((a, b) => (a.distancia_km ?? 1e9) - (b.distancia_km ?? 1e9));
+  }
+
+  res.json(salas);
 });
 
 r.get('/:id', (req, res) => {
@@ -81,11 +123,24 @@ r.get('/:id/disponibilidad', (req, res) => {
 
 r.post('/', authRequired, soloAdmin, (req, res) => {
   const nombre = String(req.body.nombre || '').trim();
+  const barrio = String(req.body.barrio || '').trim();
   const descripcion = String(req.body.descripcion || '').trim();
   const equipamiento = String(req.body.equipamiento || '').trim();
   const precio_hora = Number(req.body.precio_hora ?? 0);
   const capacidad = Number(req.body.capacidad ?? 10);
   const slot_minutos = Number(req.body.slot_minutos ?? 60);
+
+  const coordLat = normalizarCoord(req.body.lat);
+  const coordLng = normalizarCoord(req.body.lng);
+  const imgs = normalizarImagenes(req.body.imagenes);
+  if (coordLat.error || coordLng.error || imgs.error) {
+    return malo(res, coordLat.error || coordLng.error || imgs.error);
+  }
+  const lat = coordLat.omitido ? null : coordLat.valor;
+  const lng = coordLng.omitido ? null : coordLng.valor;
+  const errorCoord = validarCoords(lat, lng);
+  if (errorCoord) return malo(res, errorCoord);
+  const imagenes = imgs.omitido ? '[]' : imgs.valor;
 
   if (!nombre) return malo(res, 'El nombre de la sala es obligatorio');
   if (!Number.isFinite(precio_hora) || precio_hora < 0) return malo(res, 'Precio inválido');
@@ -98,9 +153,9 @@ r.post('/', authRequired, soloAdmin, (req, res) => {
 
   const info = db
     .prepare(
-      'INSERT INTO salas (nombre, descripcion, equipamiento, precio_hora, capacidad, slot_minutos) VALUES (?, ?, ?, ?, ?, ?)'
+      'INSERT INTO salas (nombre, barrio, lat, lng, imagenes, descripcion, equipamiento, precio_hora, capacidad, slot_minutos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     )
-    .run(nombre, descripcion, equipamiento, precio_hora, capacidad, slot_minutos);
+    .run(nombre, barrio, lat, lng, imagenes, descripcion, equipamiento, precio_hora, capacidad, slot_minutos);
   const id = info.lastInsertRowid;
 
   // Si no viene disponibilidad (o viene vacía), usamos el horario por defecto lun–sáb 10–23.
@@ -122,6 +177,7 @@ r.put('/:id', authRequired, soloAdmin, (req, res) => {
 
   const actual = {
     nombre: req.body.nombre !== undefined ? String(req.body.nombre).trim() : sala.nombre,
+    barrio: req.body.barrio !== undefined ? String(req.body.barrio || '').trim() : sala.barrio,
     descripcion:
       req.body.descripcion !== undefined ? String(req.body.descripcion).trim() : sala.descripcion,
     equipamiento:
@@ -132,6 +188,18 @@ r.put('/:id', authRequired, soloAdmin, (req, res) => {
       req.body.slot_minutos !== undefined ? Number(req.body.slot_minutos) : sala.slot_minutos,
     activa: req.body.activa !== undefined ? (req.body.activa ? 1 : 0) : sala.activa,
   };
+
+  const coordLat = normalizarCoord(req.body.lat);
+  const coordLng = normalizarCoord(req.body.lng);
+  const imgs = normalizarImagenes(req.body.imagenes);
+  if (coordLat.error || coordLng.error || imgs.error) {
+    return malo(res, coordLat.error || coordLng.error || imgs.error);
+  }
+  const lat = coordLat.omitido ? sala.lat : coordLat.valor;
+  const lng = coordLng.omitido ? sala.lng : coordLng.valor;
+  const errorCoord = validarCoords(lat, lng);
+  if (errorCoord) return malo(res, errorCoord);
+  const imagenes = imgs.omitido ? sala.imagenes : imgs.valor;
 
   if (!actual.nombre) return malo(res, 'El nombre de la sala es obligatorio');
   if (!Number.isFinite(actual.precio_hora) || actual.precio_hora < 0) {
@@ -145,9 +213,13 @@ r.put('/:id', authRequired, soloAdmin, (req, res) => {
   }
 
   db.prepare(
-    'UPDATE salas SET nombre = ?, descripcion = ?, equipamiento = ?, precio_hora = ?, capacidad = ?, slot_minutos = ?, activa = ? WHERE id = ?'
+    'UPDATE salas SET nombre = ?, barrio = ?, lat = ?, lng = ?, imagenes = ?, descripcion = ?, equipamiento = ?, precio_hora = ?, capacidad = ?, slot_minutos = ?, activa = ? WHERE id = ?'
   ).run(
     actual.nombre,
+    actual.barrio,
+    lat,
+    lng,
+    imagenes,
     actual.descripcion,
     actual.equipamiento,
     actual.precio_hora,

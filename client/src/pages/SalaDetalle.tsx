@@ -45,6 +45,15 @@ export default function SalaDetalle() {
       <div className="detalle-cab">
         <div>
           <h1>{sala.nombre}</h1>
+          {sala.barrio && (
+            <span className="chip chip-barrio">
+              📍 {sala.barrio}
+              {sala.lat != null &&
+                sala.lng != null &&
+                typeof sala.distancia_km === 'number' &&
+                ` · ${sala.distancia_km} km`}
+            </span>
+          )}
           <p className="detalle-desc">{sala.descripcion}</p>
         </div>
         <div className="detalle-precio">

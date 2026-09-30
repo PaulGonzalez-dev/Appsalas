@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS salas (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nombre TEXT NOT NULL,
+  barrio TEXT NOT NULL DEFAULT '',
+  lat REAL,
+  lng REAL,
+  imagenes TEXT NOT NULL DEFAULT '[]',
   descripcion TEXT NOT NULL DEFAULT '',
   equipamiento TEXT NOT NULL DEFAULT '',
   precio_hora REAL NOT NULL DEFAULT 0,
@@ -62,5 +66,14 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_reserva_slot
 CREATE INDEX IF NOT EXISTS idx_reservas_fecha ON reservas(fecha);
 CREATE INDEX IF NOT EXISTS idx_reservas_usuario ON reservas(usuario_id);
 `);
+
+// Migración para bases creadas antes de la versión de "salas cercanas".
+function columna(tabla, nombre) {
+  return db.prepare(`PRAGMA table_info(${tabla})`).all().some((c) => c.name === nombre);
+}
+if (!columna('salas', 'barrio')) db.exec("ALTER TABLE salas ADD COLUMN barrio TEXT NOT NULL DEFAULT ''");
+if (!columna('salas', 'lat')) db.exec('ALTER TABLE salas ADD COLUMN lat REAL');
+if (!columna('salas', 'lng')) db.exec('ALTER TABLE salas ADD COLUMN lng REAL');
+if (!columna('salas', 'imagenes')) db.exec("ALTER TABLE salas ADD COLUMN imagenes TEXT NOT NULL DEFAULT '[]'");
 
 export default db;

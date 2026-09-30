@@ -46,3 +46,28 @@ export function sumarDias(fecha, dias) {
 export function malo(res, error, status = 400) {
   return res.status(status).json({ error });
 }
+
+/** Distancia en kilómetros entre dos coordenadas (Haversine). */
+export function distanciaKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const aRad = (d) => (d * Math.PI) / 180;
+  const dLat = aRad(lat2 - lat1);
+  const dLon = aRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(aRad(lat1)) * Math.cos(aRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+/** Devuelve la sala con `imagenes` como array (viene como texto JSON de la DB). */
+export function conImagenes(sala) {
+  if (Array.isArray(sala.imagenes)) return sala;
+  let imagenes = [];
+  try {
+    const p = JSON.parse(sala.imagenes || '[]');
+    if (Array.isArray(p)) imagenes = p;
+  } catch {
+    /* imagen inválida: quedamos sin fotos */
+  }
+  return { ...sala, imagenes };
+}

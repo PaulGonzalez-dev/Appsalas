@@ -11,6 +11,7 @@ import {
   fechaValida,
   diaSemana,
   esPasado,
+  conImagenes,
 } from '../util.js';
 
 const r = Router();
@@ -66,7 +67,7 @@ r.get('/api/turnos', authOpcional, (req, res) => {
       }
     }
 
-    return { sala, cerrado: false, turnos };
+    return { sala: conImagenes(sala), cerrado: false, turnos };
   });
 
   res.json({ fecha, dia_semana: wd, salas: resultado });

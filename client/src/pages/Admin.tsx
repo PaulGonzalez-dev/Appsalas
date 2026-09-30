@@ -20,15 +20,33 @@ for (let h = 6; h <= 23; h++) {
   HORAS_VALIDAS.push(`${String(h).padStart(2, '0')}:30`);
 }
 
-const vacia = (): Omit<Sala, 'id'> & { id?: number } => ({
+interface FormSala {
+  id?: number;
+  nombre: string;
+  barrio: string;
+  descripcion: string;
+  equipamiento: string;
+  precio_hora: number;
+  capacidad: number;
+  slot_minutos: number;
+  lat: string;
+  lng: string;
+  imagenes: string;
+  activa: number;
+}
+
+const vacia = (): FormSala => ({
   nombre: '',
+  barrio: '',
   descripcion: '',
   equipamiento: '',
   precio_hora: 4000,
   capacidad: 6,
   slot_minutos: 60,
+  lat: '',
+  lng: '',
+  imagenes: '',
   activa: 1,
-  disponibilidad: [],
 });
 
 export default function Admin() {
@@ -98,7 +116,20 @@ function TabSalas() {
   }
 
   function abrirEdicion(s: Sala) {
-    setForm({ ...s });
+    setForm({
+      id: s.id,
+      nombre: s.nombre,
+      barrio: s.barrio || '',
+      descripcion: s.descripcion,
+      equipamiento: s.equipamiento,
+      precio_hora: s.precio_hora,
+      capacidad: s.capacidad,
+      slot_minutos: s.slot_minutos,
+      lat: s.lat != null ? String(s.lat) : '',
+      lng: s.lng != null ? String(s.lng) : '',
+      imagenes: (s.imagenes || []).join('\n'),
+      activa: s.activa,
+    });
     setError(null);
     setEditando('editar');
   }
@@ -109,11 +140,20 @@ function TabSalas() {
     setEnviando(true);
     setError(null);
     try {
+      const cuerpo = {
+        ...form,
+        lat: form.lat === '' ? null : Number(form.lat),
+        lng: form.lng === '' ? null : Number(form.lng),
+        imagenes: form.imagenes
+          .split('\n')
+          .map((x) => x.trim())
+          .filter(Boolean),
+      };
       if (form.id) {
-        await api(`/api/salas/${form.id}`, { method: 'PUT', body: form });
+        await api(`/api/salas/${form.id}`, { method: 'PUT', body: cuerpo });
         avisar('Sala actualizada');
       } else {
-        await api('/api/salas', { method: 'POST', body: form });
+        await api('/api/salas', { method: 'POST', body: cuerpo });
         avisar('Sala creada');
       }
       setEditando(null);
@@ -227,6 +267,14 @@ function TabSalas() {
               />
             </label>
             <label className="field">
+              <span>Barrio</span>
+              <input
+                value={form.barrio}
+                onChange={(e) => setForm({ ...form, barrio: e.target.value })}
+                placeholder="Ej: Güemes"
+              />
+            </label>
+            <label className="field">
               <span>Descripción</span>
               <textarea
                 rows={2}
@@ -276,6 +324,37 @@ function TabSalas() {
                 </select>
               </label>
             </div>
+            <div className="campo-fila">
+              <label className="field">
+                <span>Latitud</span>
+                <input
+                  type="number"
+                  step="any"
+                  value={form.lat}
+                  onChange={(e) => setForm({ ...form, lat: e.target.value })}
+                  placeholder="-31.42"
+                />
+              </label>
+              <label className="field">
+                <span>Longitud</span>
+                <input
+                  type="number"
+                  step="any"
+                  value={form.lng}
+                  onChange={(e) => setForm({ ...form, lng: e.target.value })}
+                  placeholder="-64.18"
+                />
+              </label>
+            </div>
+            <label className="field">
+              <span>Imágenes (URLs, una por línea)</span>
+              <textarea
+                rows={2}
+                value={form.imagenes}
+                onChange={(e) => setForm({ ...form, imagenes: e.target.value })}
+                placeholder={"/img/metronomo-1.jpg\n/img/metronomo-2.jpg"}
+              />
+            </label>
             {!form.id && (
               <p className="muted chico">
                 Se creará con horarios lun a sáb de 10:00 a 23:00; después podés ajustarlos en la
