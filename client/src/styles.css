@@ -416,17 +416,22 @@ code {
 
 /* ------------------------------ Pasos ------------------------------ */
 
+/* Pasos en columna vertical (página ¿Cómo funciona?) */
 .pasos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 1.1rem;
+  max-width: 760px;
 }
 
 .paso {
-  background: var(--sup);
-  border: 1px solid var(--linea);
+  background: #ffffff;
+  border: 1px solid rgba(2, 3, 5, 0.08);
   border-radius: var(--radio);
   padding: 1.4rem;
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
 }
 
 .paso-nro {
@@ -434,15 +439,21 @@ code {
   place-items: center;
   width: 34px;
   height: 34px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: var(--acento);
   color: #020305;
   font-weight: 800;
-  margin-bottom: 0.7rem;
+}
+
+.paso h4 {
+  color: var(--fondo);
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
 }
 
 .paso p {
-  color: var(--apagado);
+  color: #4a4f57;
   font-size: 0.93rem;
   margin: 0;
 }

@@ -15,18 +15,24 @@ export default function ComoFunciona() {
         <div className="pasos">
           <div className="paso">
             <span className="paso-nro">1</span>
-            <h4>Creá tu cuenta</h4>
-            <p>Registro gratuito en menos de un minuto con tu email.</p>
+            <div>
+              <h4>Creá tu cuenta</h4>
+              <p>Registro gratuito en menos de un minuto con tu email.</p>
+            </div>
           </div>
           <div className="paso">
             <span className="paso-nro">2</span>
-            <h4>Elegí día, hora y duración</h4>
-            <p>El calendario muestra en vivo qué turnos están libres, de 2, 3 o 4 horas.</p>
+            <div>
+              <h4>Elegí día, hora y duración</h4>
+              <p>El calendario muestra en vivo qué turnos están libres, de 2, 3 o 4 horas.</p>
+            </div>
           </div>
           <div className="paso">
             <span className="paso-nro">3</span>
-            <h4>¡Ensaya!</h4>
-            <p>Tu turno queda reservado. Podés cancelarlo sin costo si cambian los planes.</p>
+            <div>
+              <h4>¡Ensaya!</h4>
+              <p>Tu turno queda reservado. Podés cancelarlo sin costo si cambian los planes.</p>
+            </div>
           </div>
         </div>
 
