@@ -1233,21 +1233,6 @@ code {
   flex-wrap: wrap;
 }
 
-.cerc-zona {
-  background: var(--fondo-2);
-  border: 1px solid var(--linea);
-  color: var(--texto);
-  border-radius: 10px;
-  padding: 0.5rem 0.7rem;
-  font: inherit;
-  font-size: 0.9rem;
-}
-
-.cerc-zona:focus {
-  outline: 2px solid rgba(255, 78, 27, 0.45);
-  border-color: var(--acento);
-}
-
 /* Buscador + filtro de precio */
 
 .cerc-filtros {

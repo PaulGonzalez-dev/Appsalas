@@ -10,19 +10,7 @@ import { fmtPrecio } from '../utils';
 type Origen =
   | { tipo: 'cargando' }
   | { tipo: 'gps'; lat: number; lng: number }
-  | { tipo: 'zona'; nombre: string; lat: number; lng: number }
   | { tipo: 'sin' };
-
-/** Zonas de referencia de Córdoba (fallback si el navegador no da la ubicación). */
-const ZONAS = [
-  { nombre: 'Centro', lat: -31.4201, lng: -64.1856 },
-  { nombre: 'Nueva Córdoba', lat: -31.4369, lng: -64.1879 },
-  { nombre: 'Güemes', lat: -31.4189, lng: -64.19 },
-  { nombre: 'Alberdi', lat: -31.4235, lng: -64.2098 },
-  { nombre: 'Cerro de las Rosas', lat: -31.4468, lng: -64.1701 },
-  { nombre: 'General Paz', lat: -31.4402, lng: -64.1995 },
-  { nombre: 'Villa Belgrano', lat: -31.4033, lng: -64.1784 },
-];
 
 function fmtDist(d?: number | null): string {
   if (d == null) return '—';
@@ -58,8 +46,7 @@ export default function SalasCercanas() {
 
   useEffect(() => {
     if (origen.tipo === 'cargando') return;
-    const conCoords = origen.tipo === 'gps' || origen.tipo === 'zona';
-    const q = conCoords ? `?lat=${origen.lat}&lng=${origen.lng}` : '';
+    const q = origen.tipo === 'gps' ? `?lat=${origen.lat}&lng=${origen.lng}` : '';
     setSalas(null);
     api<Sala[]>(`/api/salas${q}`)
       .then(setSalas)
@@ -69,23 +56,12 @@ export default function SalasCercanas() {
       });
   }, [origen, avisar]);
 
-  function elegirZona(idx: string) {
-    if (idx === '') return;
-    const z = ZONAS[Number(idx)];
-    setOrigen({ tipo: 'zona', nombre: z.nombre, lat: z.lat, lng: z.lng });
-  }
-
-  const nombreZona = origen.tipo === 'zona' ? origen.nombre : null;
-  const zonaSel = nombreZona ? ZONAS.findIndex((z) => z.nombre === nombreZona) : -1;
-
   const subtitulo =
     origen.tipo === 'gps'
       ? 'Las más cercanas a tu ubicación, de menor a mayor distancia.'
-      : nombreZona
-        ? `Ordenadas por distancia desde ${nombreZona}.`
-        : origen.tipo === 'sin'
-          ? 'Elegí tu zona para ver la distancia a cada sala.'
-          : 'Detectando tu ubicación…';
+      : origen.tipo === 'sin'
+        ? 'Mostrando todas las salas — activá tu ubicación para ver distancias.'
+        : 'Detectando tu ubicación…';
 
   // Filtros de la lista: texto (nombre o barrio) y precio máximo por hora
   const precios = (salas ?? []).map((s) => s.precio_hora);
@@ -113,19 +89,6 @@ export default function SalasCercanas() {
             <button className="btn btn-ghost btn-sm" onClick={pedirGPS}>
               📍 Usar mi ubicación
             </button>
-            <select
-              className="cerc-zona"
-              value={zonaSel >= 0 ? String(zonaSel) : ''}
-              onChange={(e) => elegirZona(e.target.value)}
-              aria-label="Elegir zona de referencia"
-            >
-              <option value="">Elegí tu zona…</option>
-              {ZONAS.map((z, i) => (
-                <option key={z.nombre} value={i}>
-                  {z.nombre}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 
@@ -197,7 +160,9 @@ export default function SalasCercanas() {
                 <div className="cerc-cuerpo">
                   <div className="cerc-fila">
                     <h3 className="cerc-nombre">{s.nombre}</h3>
-                    <span className="cerc-dist">{fmtDist(s.distancia_km)}</span>
+                    {s.distancia_km != null && (
+                      <span className="cerc-dist">{fmtDist(s.distancia_km)}</span>
+                    )}
                   </div>
                   <span className="cerc-barrio">📍 {s.barrio || 'Sin barrio cargado'}</span>
                   <p className="cerc-desc">{s.descripcion}</p>
