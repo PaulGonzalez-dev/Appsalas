@@ -1248,6 +1248,79 @@ code {
   border-color: var(--acento);
 }
 
+/* Buscador + filtro de precio */
+
+.cerc-filtros {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+  padding: 0.9rem 1rem;
+  background: var(--sup);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 220px;
+  max-width: 380px;
+  background: var(--fondo-2);
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  padding: 0 0.7rem;
+}
+
+.buscador:focus-within {
+  border-color: var(--acento);
+}
+
+.buscador span {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  color: var(--texto);
+  font: inherit;
+  padding: 0.6rem 0;
+}
+
+.buscador input:focus {
+  outline: none;
+}
+
+.buscador input::placeholder {
+  color: var(--apagado);
+}
+
+.filtro-precio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--apagado);
+  min-width: 210px;
+}
+
+.filtro-precio strong {
+  color: var(--acento);
+}
+
+.filtro-precio input[type='range'] {
+  width: 100%;
+  accent-color: var(--acento);
+  cursor: pointer;
+}
+
 .cerc-lista {
   display: flex;
   flex-direction: column;

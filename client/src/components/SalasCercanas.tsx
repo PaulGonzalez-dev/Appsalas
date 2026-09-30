@@ -36,6 +36,8 @@ export default function SalasCercanas() {
   const navigate = useNavigate();
   const [origen, setOrigen] = useState<Origen>({ tipo: 'cargando' });
   const [salas, setSalas] = useState<Sala[] | null>(null);
+  const [busqueda, setBusqueda] = useState('');
+  const [precioMax, setPrecioMax] = useState<number | null>(null);
 
   const pedirGPS = useCallback(() => {
     if (!('geolocation' in navigator)) {
@@ -85,6 +87,20 @@ export default function SalasCercanas() {
           ? 'Elegí tu zona para ver la distancia a cada sala.'
           : 'Detectando tu ubicación…';
 
+  // Filtros de la lista: texto (nombre o barrio) y precio máximo por hora
+  const precios = (salas ?? []).map((s) => s.precio_hora);
+  const pMin = precios.length ? Math.floor(Math.min(...precios) / 500) * 500 : 0;
+  const pMax = precios.length ? Math.ceil(Math.max(...precios) / 500) * 500 : 10000;
+  const limite = precioMax ?? pMax;
+  const texto = busqueda.trim().toLowerCase();
+  const filtradas = (salas ?? []).filter((s) => {
+    const coincideTexto =
+      !texto ||
+      s.nombre.toLowerCase().includes(texto) ||
+      (s.barrio || '').toLowerCase().includes(texto);
+    return coincideTexto && s.precio_hora <= limite;
+  });
+
   return (
     <section className="seccion" id="cercanas">
       <div className="contenedor">
@@ -120,8 +136,53 @@ export default function SalasCercanas() {
         ) : salas.length === 0 ? (
           <Vacio titulo="Todavía no hay salas cargadas" />
         ) : (
-          <div className="cerc-lista">
-            {salas.map((s) => (
+          <>
+            {/* Buscador y filtro de precio */}
+            <div className="cerc-filtros">
+              <div className="buscador">
+                <span aria-hidden>🔍</span>
+                <input
+                  type="search"
+                  placeholder="Buscar sala o barrio"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  aria-label="Buscar sala o barrio"
+                />
+              </div>
+              <label className="filtro-precio">
+                <span>
+                  Precio máx. por hora: <strong>{fmtPrecio(limite)}</strong>
+                </span>
+                <input
+                  type="range"
+                  min={pMin}
+                  max={pMax}
+                  step={100}
+                  value={limite}
+                  onChange={(e) => setPrecioMax(Number(e.target.value))}
+                  aria-label="Precio máximo por hora"
+                />
+              </label>
+              {(texto || precioMax !== null) && (
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => {
+                    setBusqueda('');
+                    setPrecioMax(null);
+                  }}
+                >
+                  Limpiar
+                </button>
+              )}
+            </div>
+
+            {filtradas.length === 0 ? (
+              <Vacio titulo="No encontramos salas">
+                <p>Probá con otro nombre, barrio o subí el precio máximo.</p>
+              </Vacio>
+            ) : (
+              <div className="cerc-lista">
+                {filtradas.map((s) => (
               <article
                 key={s.id}
                 className="cerc-card"
@@ -147,8 +208,10 @@ export default function SalasCercanas() {
                   </div>
                 </div>
               </article>
-            ))}
-          </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
