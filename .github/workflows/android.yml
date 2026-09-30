@@ -32,7 +32,7 @@ jobs:
       - name: Capacitor sync
         run: npx cap sync android
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
@@ -46,7 +46,15 @@ jobs:
 
       - name: Gradle assembleDebug
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon 2>&1 | tee "$RUNNER_TEMP/gradle.log"; exit ${PIPESTATUS[0]}
+
+      - name: Subir log de Gradle (si falla)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-log
+          path: ${{ runner.temp }}/gradle.log
+          if-no-files-found: ignore
 
       - name: Subir APK
         uses: actions/upload-artifact@v4
