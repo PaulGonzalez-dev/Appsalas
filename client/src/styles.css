@@ -492,31 +492,26 @@ code {
   font-size: 0.85rem;
 }
 
-.detalle-stats {
-  display: flex;
-  gap: 1rem;
-  margin: 1.4rem 0;
-  flex-wrap: wrap;
+.detalle-fotos {
+  margin: 1.2rem 0;
 }
 
-.stat {
-  background: var(--sup);
-  border: 1px solid var(--linea);
+.detalle-fotos .cerc-fotos {
+  height: clamp(240px, 38vw, 380px);
   border-radius: var(--radio);
-  padding: 0.9rem 1.4rem;
-  display: flex;
-  flex-direction: column;
-  min-width: 130px;
+  border: 1px solid var(--linea);
+  overflow: hidden;
 }
 
-.stat-valor {
-  font-size: 1.35rem;
-  font-weight: 800;
+.detalle-fotos .foto-btn {
+  width: 38px;
+  height: 38px;
+  font-size: 1.25rem;
 }
 
-.stat-etiqueta {
-  color: var(--apagado);
-  font-size: 0.82rem;
+.detalle-fotos .foto-dot {
+  width: 9px;
+  height: 9px;
 }
 
 .detalle-cuerpo {

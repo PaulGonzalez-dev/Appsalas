@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { api, ApiError } from '../api';
 import type { Sala } from '../types';
 import { Spinner, Vacio } from '../components/UI';
+import CarruselFotos from '../components/CarruselFotos';
 import { DIAS_LARGOS, fmtHora, fmtPrecio } from '../utils';
 
 export default function SalaDetalle() {
@@ -54,7 +55,6 @@ export default function SalaDetalle() {
                 ` · ${sala.distancia_km} km`}
             </span>
           )}
-          <p className="detalle-desc">{sala.descripcion}</p>
         </div>
         <div className="detalle-precio">
           <strong>{fmtPrecio(sala.precio_hora)}</strong>
@@ -62,20 +62,12 @@ export default function SalaDetalle() {
         </div>
       </div>
 
-      <div className="detalle-stats">
-        <div className="stat">
-          <span className="stat-valor">{sala.capacidad}</span>
-          <span className="stat-etiqueta">personas</span>
-        </div>
-        <div className="stat">
-          <span className="stat-valor">2–4 h</span>
-          <span className="stat-etiqueta">duración de turno</span>
-        </div>
-        <div className="stat">
-          <span className="stat-valor">{fmtPrecio(Math.round(sala.precio_hora / 2))}</span>
-          <span className="stat-etiqueta">media hora</span>
-        </div>
+      {/* Carrusel de imágenes de la sala */}
+      <div className="detalle-fotos">
+        <CarruselFotos imagenes={sala.imagenes || []} alt={sala.nombre} />
       </div>
+
+      <p className="detalle-desc">{sala.descripcion}</p>
 
       <div className="detalle-cuerpo">
         <section className="card">
