@@ -18,9 +18,10 @@ el administrador gestiona salas, horarios de atención y reservas.
 - **Roles**: administrador y músico.
 - **Salas**: CRUD con descripción, equipamiento, precio por hora, capacidad y duración del turno.
 - **Disponibilidad**: por sala y día de la semana (desde/hasta), configurable por el admin.
+- **Turnos de 2, 3 y 4 horas** en todas las salas: elegís la duración al reservar (la grilla avanza de a 1 hora y valida disponibilidad y solapamientos)
 - **Mi perfil**: foto de perfil (se recorta cuadrado en el navegador), datos personales (nombre, teléfono, bio) y las bandas en las que tocás con tu instrumento
 - **Salas cercanas**: geolocalización del usuario (con fallback por zona), distancia en km/m y carrusel de fotos por sala, con precio por turno de 2 horas
-- **Calendario de turnos**: grilla diaria generada automáticamente (libre / ocupado / pasado / tu turno).
+- **Calendario de turnos**: grilla diaria generada automáticamente en pasos de 1 hora (libre / ocupado / pasado / tu turno) con duraciones de 2, 3 o 4 horas.
 - **Reservas**: crear, cancelar (dueño o admin), historial y próximos turnos.
 - **Panel de administración**: salas, disponibilidad y listado de reservas con filtros.
 - Interfaz 100% en español (rioplatense), tema oscuro responsive.
@@ -93,7 +94,7 @@ Appsalas/
 | PUT    | `/api/salas/:id/disponibilidad`     | admin         | Reemplazar horarios semanales |
 | GET    | `/api/turnos?fecha=AAAA-MM-DD&sala_id=` | sesión opcional | Grilla de turnos del día |
 | GET    | `/api/reservas?scope=mias\|todas&…` | sesión        | Listado (admin puede ver todas) |
-| POST   | `/api/reservas`                     | sesión        | Reservar turno |
+| POST   | `/api/reservas`                     | sesión        | Reservar turno (elegís duración: 120/180/240 min) |
 | DELETE | `/api/reservas/:id`                 | dueño/admin   | Cancelar reserva |
 
 Variables de entorno (opcionales): `PORT` (3001), `JWT_SECRET`, `TZ`

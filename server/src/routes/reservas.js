@@ -16,8 +16,13 @@ import {
 
 const r = Router();
 
+// Todas las salas ofrecen turnos de 2, 3 y 4 horas; la grilla avanza de a 1 hora.
+const DURACIONES = [120, 180, 240];
+const PASO_GRILLA = 60;
+
 // GET /api/turnos?fecha=YYYY-MM-DD&sala_id=<opcional>
 // Devuelve, por sala, la grilla de turnos del día: libre / ocupado / pasado.
+// Cada turno libre trae `libres`: duraciones disponibles en ese inicio (min).
 r.get('/api/turnos', authOpcional, (req, res) => {
   const fecha = String(req.query.fecha || '');
   if (!fechaValida(fecha)) return malo(res, 'Fecha inválida. Usá el formato AAAA-MM-DD');
@@ -37,34 +42,57 @@ r.get('/api/turnos', authOpcional, (req, res) => {
 
   const resultado = salas.map((sala) => {
     const disp = stmtDisp.get(sala.id, wd);
-    if (!disp) return { sala, cerrado: true, turnos: [] };
+    if (!disp) return { sala: conImagenes(sala), cerrado: true, turnos: [] };
 
     const reservas = stmtRes.all(sala.id, fecha);
     const desde = aMinutos(disp.hora_inicio);
     const hasta = aMinutos(disp.hora_fin);
-    const slot = sala.slot_minutos;
     const turnos = [];
 
-    for (let t = desde; t + slot <= hasta; t += slot) {
-      const hi = aHHMM(t);
-      const hf = aHHMM(t + slot);
-      const ocupada = reservas.find(
-        (x) => aMinutos(x.hora_inicio) < t + slot && aMinutos(x.hora_fin) > t
-      );
+    const solapa = (ini, fin) =>
+      reservas.some((x) => aMinutos(x.hora_inicio) < fin && aMinutos(x.hora_fin) > ini);
 
-      if (ocupada) {
+    for (let t = desde; t + Math.min(...DURACIONES) <= hasta; t += PASO_GRILLA) {
+      const hi = aHHMM(t);
+      const finCelda = t + PASO_GRILLA;
+
+      // Reserva propia que arranca exactamente acá → permite ver/cancelar
+      const propia = req.user
+        ? reservas.find((x) => x.usuario_id === req.user.id && aMinutos(x.hora_inicio) === t)
+        : null;
+      if (propia) {
         turnos.push({
           hora_inicio: hi,
-          hora_fin: hf,
+          hora_fin: propia.hora_fin,
           estado: 'ocupado',
-          es_mia: !!req.user && ocupada.usuario_id === req.user.id,
-          reserva_id: ocupada.id,
+          es_mia: true,
+          reserva_id: propia.id,
+          libres: [],
         });
-      } else if (esPasado(fecha, hi)) {
-        turnos.push({ hora_inicio: hi, hora_fin: hf, estado: 'pasado' });
-      } else {
-        turnos.push({ hora_inicio: hi, hora_fin: hf, estado: 'libre' });
+        continue;
       }
+
+      if (solapa(t, finCelda)) {
+        turnos.push({ hora_inicio: hi, hora_fin: aHHMM(finCelda), estado: 'ocupado', libres: [] });
+        continue;
+      }
+      if (esPasado(fecha, hi)) {
+        turnos.push({ hora_inicio: hi, hora_fin: aHHMM(finCelda), estado: 'pasado', libres: [] });
+        continue;
+      }
+
+      const libres = DURACIONES.filter((d) => t + d <= hasta && !solapa(t, t + d));
+      if (libres.length === 0) {
+        // Celda libre pero no entra un turno mínimo de 2 h
+        turnos.push({ hora_inicio: hi, hora_fin: aHHMM(finCelda), estado: 'ocupado', libres: [] });
+        continue;
+      }
+      turnos.push({
+        hora_inicio: hi,
+        hora_fin: aHHMM(finCelda),
+        estado: 'libre',
+        libres,
+      });
     }
 
     return { sala: conImagenes(sala), cerrado: false, turnos };
@@ -73,16 +101,20 @@ r.get('/api/turnos', authOpcional, (req, res) => {
   res.json({ fecha, dia_semana: wd, salas: resultado });
 });
 
-// POST /api/reservas  { sala_id, fecha, hora_inicio, nota? }
+// POST /api/reservas  { sala_id, fecha, hora_inicio, duracion (120|180|240), nota? }
 r.post('/api/reservas', authRequired, (req, res) => {
   const sala_id = Number(req.body.sala_id);
   const fecha = String(req.body.fecha || '');
   const hora_inicio = String(req.body.hora_inicio || '');
+  const duracion = Number(req.body.duracion ?? 120);
   const nota = String(req.body.nota || '').slice(0, 300);
 
   if (!Number.isInteger(sala_id)) return malo(res, 'Sala inválida');
   if (!fechaValida(fecha)) return malo(res, 'Fecha inválida');
   if (!RE_HORA.test(hora_inicio)) return malo(res, 'Hora de inicio inválida');
+  if (!DURACIONES.includes(duracion)) {
+    return malo(res, 'Duración inválida: los turnos son de 2, 3 o 4 horas');
+  }
 
   const sala = db.prepare('SELECT * FROM salas WHERE id = ? AND activa = 1').get(sala_id);
   if (!sala) return malo(res, 'Sala no encontrada', 404);
@@ -94,13 +126,15 @@ r.post('/api/reservas', authRequired, (req, res) => {
   if (!disp) return malo(res, 'La sala no abre ese día');
 
   const ini = aMinutos(hora_inicio);
-  const slot = sala.slot_minutos;
-  const fin = ini + slot;
+  const fin = ini + duracion;
   const limIni = aMinutos(disp.hora_inicio);
   const limFin = aMinutos(disp.hora_fin);
 
-  if (ini < limIni || fin > limFin || (ini - limIni) % slot !== 0) {
+  if (ini < limIni || fin > limFin) {
     return malo(res, 'Ese horario no está disponible en la franja de la sala');
+  }
+  if ((ini - limIni) % PASO_GRILLA !== 0) {
+    return malo(res, 'Ese horario no está disponible');
   }
   if (esPasado(fecha, hora_inicio)) {
     return malo(res, 'Ese turno ya pasó');

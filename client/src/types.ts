@@ -55,6 +55,8 @@ export interface Turno {
   estado: 'libre' | 'ocupado' | 'pasado';
   es_mia?: boolean;
   reserva_id?: number;
+  /** Duraciones disponibles (min) cuando está libre: 120 / 180 / 240 */
+  libres?: number[];
 }
 
 export interface SalaTurnos {

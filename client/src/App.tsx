@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Registro from './pages/Registro';
 import Admin from './pages/Admin';
 import Perfil from './pages/Perfil';
+import ComoFunciona from './pages/ComoFunciona';
 import type { ReactNode } from 'react';
 
 function RequiereSesion({
@@ -60,6 +61,7 @@ export default function App() {
               />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
+              <Route path="/como-funciona" element={<ComoFunciona />} />
               <Route
                 path="/perfil"
                 element={

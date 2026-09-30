@@ -1555,6 +1555,78 @@ code {
   border-radius: 50%;
 }
 
+/* ------------------------------ Duración de turno ------------------------------ */
+
+.duracion-etiqueta {
+  display: block;
+  color: var(--apagado);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-top: 0.9rem;
+}
+
+.duracion-opciones {
+  display: flex;
+  gap: 0.55rem;
+  margin-top: 0.4rem;
+}
+
+.dur-btn {
+  flex: 1;
+  background: var(--fondo-2);
+  border: 1px solid var(--linea);
+  color: var(--texto);
+  border-radius: 10px;
+  padding: 0.6rem 0.4rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease;
+}
+
+.dur-btn:hover:not(:disabled) {
+  border-color: var(--acento);
+}
+
+.dur-btn.sel {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: #020305;
+}
+
+.dur-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* ------------------------------ Cómo funciona (página) ------------------------------ */
+
+.seccion-como {
+  min-height: calc(100vh - 230px);
+  display: flex;
+  align-items: center;
+}
+
+.como-cta {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.9rem;
+  flex-wrap: wrap;
+}
+
+.seccion-clara .btn-ghost {
+  color: var(--fondo);
+  border-color: rgba(2, 3, 5, 0.35);
+}
+
+.seccion-clara .btn-ghost:hover:not(:disabled) {
+  color: var(--acento);
+  border-color: var(--acento);
+}
+
 /* ------------------------------ Responsive ------------------------------ */
 
 @media (max-width: 900px) {

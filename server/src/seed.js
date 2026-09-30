@@ -182,7 +182,7 @@ function seedReservas() {
 
   const hoy = hoyStr();
   const crear = (usuario, fecha, hora) =>
-    insert.run(sala1.id, usuario, fecha, hora, finDe(hora, sala1.slot_minutos));
+    insert.run(sala1.id, usuario, fecha, hora, finDe(hora, 120)); // turnos demo de 2 h
 
   crear(musico.id, sumarDias(hoy, 1), '19:00'); // mañana
   crear(admin.id, sumarDias(hoy, 2), '18:00');

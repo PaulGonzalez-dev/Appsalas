@@ -68,8 +68,8 @@ export default function SalaDetalle() {
           <span className="stat-etiqueta">personas</span>
         </div>
         <div className="stat">
-          <span className="stat-valor">{sala.slot_minutos}′</span>
-          <span className="stat-etiqueta">por turno</span>
+          <span className="stat-valor">2–4 h</span>
+          <span className="stat-etiqueta">duración de turno</span>
         </div>
         <div className="stat">
           <span className="stat-valor">{fmtPrecio(Math.round(sala.precio_hora / 2))}</span>

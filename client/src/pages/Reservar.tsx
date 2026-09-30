@@ -24,6 +24,7 @@ export default function Reservar() {
   const [datos, setDatos] = useState<RespuestaTurnos | null>(null);
   const [cargando, setCargando] = useState(true);
   const [sel, setSel] = useState<Turno | null>(null);
+  const [duracion, setDuracion] = useState(120);
   const [enviando, setEnviando] = useState(false);
 
   // Carga de salas
@@ -71,6 +72,9 @@ export default function Reservar() {
       return;
     }
     if (t.estado !== 'libre') return;
+    // Duración por defecto: 2 h si está disponible, si no la primera válida
+    const libs = t.libres?.length ? t.libres : [120];
+    setDuracion(libs.includes(120) ? 120 : libs[0]);
     setSel(t);
   }
 
@@ -80,9 +84,11 @@ export default function Reservar() {
     try {
       await api('/api/reservas', {
         method: 'POST',
-        body: { sala_id: salaId, fecha, hora_inicio: sel.hora_inicio },
+        body: { sala_id: salaId, fecha, hora_inicio: sel.hora_inicio, duracion },
       });
-      avisar(`Turno reservado: ${fechaLarga(fecha)} a las ${fmtHora(sel.hora_inicio)}`);
+      avisar(
+        `Turno de ${duracion / 60} h reservado: ${fechaLarga(fecha)} a las ${fmtHora(sel.hora_inicio)}`
+      );
       setSel(null);
       recargar();
     } catch (e) {
@@ -122,7 +128,7 @@ export default function Reservar() {
   const salaActual = salas.find((s) => s.id === salaId);
   const dato = datos?.salas.find((x) => x.sala.id === salaId);
   const precioTurno = salaActual
-    ? Math.round((salaActual.precio_hora * salaActual.slot_minutos) / 60)
+    ? Math.round((salaActual.precio_hora * duracion) / 60)
     : 0;
 
   return (
@@ -139,7 +145,7 @@ export default function Reservar() {
           <select value={salaId ?? ''} onChange={(e) => setSalaId(Number(e.target.value))}>
             {salas.map((s) => (
               <option key={s.id} value={s.id}>
-                {s.nombre} · {s.slot_minutos}′ · {fmtPrecio(s.precio_hora)}/h
+                {s.nombre} · 2–4 h · {fmtPrecio(s.precio_hora)}/h
               </option>
             ))}
           </select>
@@ -210,7 +216,7 @@ export default function Reservar() {
                           : 'Ocupado'
                         : t.estado === 'pasado'
                           ? 'Pasado'
-                          : 'Libre'}
+                          : `Libre · ${(t.libres ?? []).map((d) => d / 60).join('/')} h`}
                     </span>
                   </button>
                 );
@@ -297,8 +303,29 @@ export default function Reservar() {
           <p>
             {fechaLarga(fecha)}
             <br />
-            {fmtHora(sel.hora_inicio)} a {fmtHora(sel.hora_fin)}
+            Desde las {fmtHora(sel.hora_inicio)}
           </p>
+
+          <span className="duracion-etiqueta">Duración del turno</span>
+          <div className="duracion-opciones" role="radiogroup" aria-label="Duración del turno">
+            {[120, 180, 240].map((d) => {
+              const ok = (sel.libres ?? [120]).includes(d);
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  role="radio"
+                  aria-checked={duracion === d && ok}
+                  className={`dur-btn${duracion === d && ok ? ' sel' : ''}`}
+                  disabled={!ok}
+                  onClick={() => setDuracion(d)}
+                >
+                  {d / 60} h
+                </button>
+              );
+            })}
+          </div>
+
           <p className="precio-modal">
             {fmtPrecio(precioTurno)} <span className="muted">total del turno</span>
           </p>

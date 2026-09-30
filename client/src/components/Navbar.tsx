@@ -42,6 +42,7 @@ export default function Navbar() {
 
         <nav className="navbar-links" aria-label="Principal">
           <NavLink to="/perfil">Mi perfil</NavLink>
+          <NavLink to="/como-funciona">Cómo funciona</NavLink>
           {user && <NavLink to="/mis-turnos">Mis turnos</NavLink>}
           {user?.rol === 'admin' && <NavLink to="/admin">Administración</NavLink>}
         </nav>

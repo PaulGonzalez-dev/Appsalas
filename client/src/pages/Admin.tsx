@@ -12,8 +12,6 @@ import {
 } from '../utils';
 
 type Pestana = 'salas' | 'disponibilidad' | 'reservas';
-
-const SLOTS_DURACION = [15, 30, 45, 60, 90, 120, 180, 240];
 const HORAS_VALIDAS: string[] = [];
 for (let h = 6; h <= 23; h++) {
   HORAS_VALIDAS.push(`${String(h).padStart(2, '0')}:00`);
@@ -28,7 +26,6 @@ interface FormSala {
   equipamiento: string;
   precio_hora: number;
   capacidad: number;
-  slot_minutos: number;
   lat: string;
   lng: string;
   imagenes: string;
@@ -42,7 +39,6 @@ const vacia = (): FormSala => ({
   equipamiento: '',
   precio_hora: 4000,
   capacidad: 6,
-  slot_minutos: 60,
   lat: '',
   lng: '',
   imagenes: '',
@@ -124,7 +120,6 @@ function TabSalas() {
       equipamiento: s.equipamiento,
       precio_hora: s.precio_hora,
       capacidad: s.capacidad,
-      slot_minutos: s.slot_minutos,
       lat: s.lat != null ? String(s.lat) : '',
       lng: s.lng != null ? String(s.lng) : '',
       imagenes: (s.imagenes || []).join('\n'),
@@ -309,19 +304,6 @@ function TabSalas() {
                   value={form.capacidad}
                   onChange={(e) => setForm({ ...form, capacidad: Number(e.target.value) })}
                 />
-              </label>
-              <label className="field">
-                <span>Duración (min)</span>
-                <select
-                  value={form.slot_minutos}
-                  onChange={(e) => setForm({ ...form, slot_minutos: Number(e.target.value) })}
-                >
-                  {SLOTS_DURACION.map((m) => (
-                    <option key={m} value={m}>
-                      {m} min
-                    </option>
-                  ))}
-                </select>
               </label>
             </div>
             <div className="campo-fila">
@@ -530,8 +512,8 @@ function TabDisponibilidad() {
         </div>
       )}
       <p className="muted chico">
-        Los turnos se generan automáticamente dentro de este rango, de acuerdo a la duración de cada
-        sala.
+        Los turnos se generan automáticamente dentro de este rango, en pasos de 1 hora y con
+        duraciones de 2, 3 y 4 horas.
       </p>
     </div>
   );
